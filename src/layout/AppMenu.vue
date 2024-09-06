@@ -48,6 +48,11 @@ const model = ref([
                         to: '/auth/login'
                     },
                     {
+                        label: 'Utilisateur',
+                        icon: 'pi pi-user',
+                        to: '/auth/listUser'
+                    },
+                    {
                         label: 'Error',
                         icon: 'pi pi-fw pi-times-circle',
                         to: '/auth/error'
@@ -64,6 +69,22 @@ const model = ref([
                 icon: 'pi pi-fw pi-pencil',
                 to: '/pages/crud'
             },
+            {
+                label: 'Transaction',
+                icon: 'pi pi-fw pi-wallet',
+                to: '/pages/addTransaction' 
+            },
+            {
+                label: 'Taux d\'échange',
+                icon: 'pi pi-fw pi-dollar',
+                to: '/pages/listTaux'
+            },
+            {
+                label: 'Actualite',
+                icon: 'pi pi-envelope',
+                to: '/pages/actualite'
+            },
+
             {
                 label: 'Not Found',
                 icon: 'pi pi-fw pi-exclamation-circle',

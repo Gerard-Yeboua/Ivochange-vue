@@ -100,6 +100,31 @@ const router = createRouter({
                     component: () => import('@/views/pages/Crud.vue')
                 },
                 {
+                    path: '/pages/addUser',
+                    name: 'AddUser',
+                    component: () => import('@/views/pages/addUser.vue')
+                },
+                {
+                    path: '/pages/listTransaction',
+                    name: 'listTransaction',
+                    component: () => import('@/views/pages/listTransaction.vue')
+                },
+                {
+                    path: '/pages/addTransaction',
+                    name: 'addTransaction',
+                    component: () => import('@/views/pages/addTransaction.vue')
+                },
+                {
+                    path: '/pages/listTaux',
+                    name: 'listTaux',
+                    component: () => import('@/views/pages/listTaux.vue')
+                },
+                {
+                    path: '/pages/actualite',
+                    name: ' addActualite',
+                    component: () => import('@/views/pages/addActualite.vue')
+                },
+                {
                     path: '/documentation',
                     name: 'documentation',
                     component: () => import('@/views/pages/Documentation.vue')
@@ -121,6 +146,11 @@ const router = createRouter({
             path: '/auth/login',
             name: 'login',
             component: () => import('@/views/pages/auth/Login.vue')
+        },
+        {
+            path: '/auth/listUser',
+            name: 'listUser',
+            component: () => import('@/views/pages/auth/listUser.vue')
         },
         {
             path: '/auth/access',
