@@ -112,7 +112,7 @@
             });
         } else {
           // Création d'un nouvel utilisateur
-          axios.post('http://127.0.0.1:8000/api/utilisateurs', utilisateur.value)
+          axios.post('http://127.0.0.1:8000/api/create', utilisateur.value)
             .then((response) => {
               utilisateurs.value.push(response.data.utilisateur);
               toast.add({ severity: 'success', summary: 'Succès', detail: 'Utilisateur créé', life: 3000 });
