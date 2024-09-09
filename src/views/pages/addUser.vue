@@ -1,67 +1,4 @@
-<script>
-import axios from 'axios';
-import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
-import Button from 'primevue/button';
-import Fluid from 'primevue/fluid'; // Assurez-vous que ce composant existe ou remplacez-le par un conteneur valide
 
-export default {
-    data() {
-        return {
-            utilisateurs: {
-                nom: '',
-                prenoms: '',
-                telephone: '',
-                pays: '',
-                email: '',
-                mot_de_passe: '',
-                date_inscription: '',
-                statut: null
-            },
-            dropdownItems: [
-                { name: 'Actif', value: 'actif' },
-                { name: 'Inactif', value: 'inactif' }
-            ]
-        };
-    },
-    methods: {
-        resetForm() {
-            this.utilisateurs = {
-                nom: '',
-                prenoms: '',
-                telephone: '',
-                pays: '',
-                email: '',
-                mot_de_passe: '',
-                date_inscription: '',
-                statut: null
-            };
-        },
-        submitForm(event) {
-            event.preventDefault(); // Correction de Event à event
-            // Validation simple
-            if (this.utilisateurs.nom && this.utilisateurs.prenoms && this.utilisateurs.email) {
-                axios.post('http://127.0.0.1:8000/api/utilisateurs', this.utilisateurs)
-                    .then((response) => {
-                        console.log('Utilisateur créé avec succès:', response.data);
-                        this.resetForm();
-                    })
-                    .catch((error) => {
-                        console.error('Erreur lors de la création de l\'utilisateur:', error.response.data);
-                    });
-            } else {
-                console.error('Veuillez remplir tous les champs obligatoires.');
-            }
-        }
-    },
-    components: {
-        InputText,
-        Select,
-        Button,
-        Fluid
-    }
-};
-</script>
 
 <template>
     <div id="page-steppers">
@@ -105,12 +42,6 @@ export default {
                         <label for="date_inscription">Date d'Inscription</label>
                         <InputText id="date_inscription" v-model="utilisateurs.date_inscription" type="date" />
                     </div>
-
-                    <div class="flex flex-col gap-2">
-                        <label for="statut">Statut</label>
-                        <Select id="statut" v-model="utilisateurs.statut" :options="dropdownItems" optionLabel="name"
-                            placeholder="Sélectionnez un statut" class="w-full" />
-                    </div>
                 </div>
             </div>
 
@@ -124,6 +55,72 @@ export default {
         </Fluid>
     </div>
 </template>
+
+<script>
+import axios from 'axios';
+import InputText from 'primevue/inputtext';
+import Select from 'primevue/select';
+import Button from 'primevue/button';
+import Fluid from 'primevue/fluid'; // Assurez-vous que ce composant existe ou remplacez-le par un conteneur valide
+
+export default {
+    data() {
+        return {
+            utilisateurs: {
+                nom: '',
+                prenoms: '',
+                telephone: '',
+                pays: '',
+                email: '',
+                mot_de_passe: '',
+                date_inscription: '',
+                statut: null
+            },
+            dropdownItems: [
+                { name: 'Actif', value: 'actif' },
+                { name: 'Inactif', value: 'inactif' }
+            ]
+        };
+    },
+    methods: {
+        resetForm() {
+            this.utilisateurs = {
+                nom: '',
+                prenoms: '',
+                telephone: '',
+                pays: '',
+                email: '',
+                mot_de_passe: '',
+                date_inscription: '',
+                statut: null
+            };
+        },
+        submitForm(event) {
+            event.preventDefault(); // Correction de Event à event
+            // Validation simple
+            if (this.utilisateurs.nom && this.utilisateurs.prenoms && this.utilisateurs.email) {
+                axios.post('http://127.0.0.1:8000/api/create', this.utilisateurs)
+                    .then((response) => {
+                        console.log('Utilisateur créé avec succès:', response.data);
+                        this.$router.push("/auth/listUser/");
+                        this.resetForm();
+                    })
+                    .catch((error) => {
+                        console.error('Erreur lors de la création de l\'utilisateur:', error.response.data);
+                    });
+            } else {
+                console.error('Veuillez remplir tous les champs obligatoires.');
+            }
+        }
+    },
+    components: {
+        InputText,
+        Select,
+        Button,
+        Fluid
+    }
+};
+</script>
 
 <style scoped>
 .card {
