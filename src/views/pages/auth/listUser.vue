@@ -20,13 +20,15 @@
           <Column field="prenoms" header="Prénoms" style="min-width: 200px"></Column>
           <Column field="telephone" header="Téléphone" style="min-width: 200px"></Column>
           <Column field="pays" header="Pays" style="min-width: 200px"></Column>
-          <Column field="date_inscription" header="Date d'inscription" style="min-width: 200px"></Column>
-          <Column :exportable="false" style="min-width: 12rem">
-            <template #body="slotProps">
-              <Button icon="pi pi-pencil" outlined rounded class="mr-2" small title="Modifier les infos de l'utilisateur" :to="`/pages/updateUser/${slotProps.data}`" />
-              <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmDeleteUser(slotProps.data)" />
+          <Column field="date_inscription" header="Date d'inscription" style="min-width: 200px"><template #body="slotProps">
+            <router-link :to="`/pages/modifieUser${slotProps.data.id}`">
+            <Button icon="pi pi-pencil" outlined rounded class="mr-2" small title="Modifier les infos de l'utilisateur" />
+            </router-link>
+            <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmDeleteUser(slotProps.data)" />
             </template>
-          </Column>
+            </Column>
+          <Column :exportable="false" style="min-width: 12rem"></Column>
+
         </DataTable>
         <p v-if="!utilisateurs.length">Aucun utilisateur trouvé.</p>
       </div>
