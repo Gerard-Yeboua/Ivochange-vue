@@ -125,10 +125,10 @@ const router = createRouter({
                     component: () => import('@/views/pages/addActualite.vue')
                 },
                 {
-                    path: '/pages/modifieUser',
-                    name: 'modifieUser',
+                    path: '/pages/updateUser/:id',
+                    name: 'updateUser',
                     component: () => import('@/views/pages/updateUser.vue')
-                },
+                },                
                 {
                     path: '/documentation',
                     name: 'documentation',
