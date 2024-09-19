@@ -15,7 +15,8 @@
         "primevue": "^4.0.0",
         "sweetalert2": "^11.14.0",
         "vue": "^3.4.34",
-        "vue-router": "^4.4.0"
+        "vue-router": "^4.4.0",
+        "waypoints": "^4.0.1"
     },
     "devDependencies": {
         "@primevue/auto-import-resolver": "^4.0.1",

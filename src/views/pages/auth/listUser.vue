@@ -1,38 +1,39 @@
 <template>
-    <div>
-      <div class="card">
-        <Toolbar class="mb-6">
-          <template #start>
-            <router-link to="/pages/addUser">
-                <Button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" />
-            </router-link>
-          </template>
+  <div>
+    <div class="card">
+      <Toolbar class="mb-6">
+        <template #start>
+          <router-link to="/pages/addUser">
+            <Button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" />
+          </router-link>
+        </template>
 
-          <template #end>
-            <Button label="Export" icon="pi pi-upload" severity="secondary" @click="exportCSV($event)" />
-          </template>
-        </Toolbar>
+        <template #end>
+          <Button label="Export" icon="pi pi-upload" severity="secondary" @click="exportCSV($event)" />
+        </template>
+      </Toolbar>
 
-        <div class="font-semibold text-xl mb-4">Liste des Utilisateurs</div>
-        <DataTable :value="utilisateurs" scrollable scrollHeight="400px" class="mt-6">
-          <Column field="id" header="ID" style="min-width: 100px"></Column>
-          <Column field="nom" header="Nom" style="min-width: 200px"></Column>
-          <Column field="prenoms" header="Prénoms" style="min-width: 200px"></Column>
-          <Column field="telephone" header="Téléphone" style="min-width: 200px"></Column>
-          <Column field="pays" header="Pays" style="min-width: 200px"></Column>
-          <Column field="date_inscription" header="Date d'inscription" style="min-width: 200px"><template #body="slotProps">
+      <div class="font-semibold text-xl mb-4">Liste des Utilisateurs</div>
+      <DataTable :value="utilisateurs" scrollable scrollHeight="400px" paginator :rows="10" 
+                 :first="first" :total-records="utilisateurs.length" @page="onPage" class="mt-6">
+        <Column field="id" header="ID" style="min-width: 100px"></Column>
+        <Column field="nom" header="Nom" style="min-width: 200px"></Column>
+        <Column field="prenoms" header="Prénoms" style="min-width: 200px"></Column>
+        <Column field="telephone" header="Téléphone" style="min-width: 200px"></Column>
+        <Column field="pays" header="Pays" style="min-width: 200px"></Column>
+        <Column field="date_inscription" header="Date d'inscription" :body="formatDateInscription" style="min-width: 200px"></Column>
+        <Column header="Actions" style="min-width: 200px">
+          <template #body="slotProps">
             <router-link :to="`/pages/updateUser/${slotProps.data.id}`">
-            <Button icon="pi pi-pencil" outlined rounded class="mr-2" small title="Modifier les infos de l'utilisateur" />
+              <Button label="Modifier" icon="pi pi-pencil" outlined rounded class="mr-2" small title="Modifier les infos de l'utilisateur" />
             </router-link>
-            <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmDeleteUser(slotProps.data)" />
-            </template>
-            </Column>
-          <Column :exportable="false" style="min-width: 12rem"></Column>
-
-        </DataTable>
-        <p v-if="!utilisateurs.length">Aucun utilisateur trouvé.</p>
-      </div>
+            <Button label="Supprimer" icon="pi pi-trash" outlined rounded severity="danger" small @click="confirmDeleteUser(slotProps.data)" />
+          </template>
+        </Column>
+      </DataTable>
+      <p v-if="!utilisateurs.length">Aucun utilisateur trouvé.</p>
     </div>
+  </div>
 </template>
 
 <script>
@@ -41,6 +42,7 @@ import axios from 'axios';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
+import Swal from 'sweetalert2';
 
 export default {
   components: {
@@ -50,7 +52,7 @@ export default {
   },
   setup() {
     const utilisateurs = ref([]);
-    const selectedProducts = ref([]);
+    const first = ref(0);  // Ajout de la gestion de la pagination
 
     const fetchUtilisateurs = async () => {
       try {
@@ -62,23 +64,49 @@ export default {
     };
 
     const confirmDeleteUser = (user) => {
-      if (confirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur ${user.nom} ?`)) {
-        axios.delete(`http://127.0.0.1:8000/api/utilisateurs/${user.id}`)
-          .then(() => {
-            fetchUtilisateurs(); // Rafraîchir la liste après la suppression
-          })
-          .catch((error) => {
-            console.error("Erreur lors de la suppression de l'utilisateur :", error);
-          });
-      }
+      Swal.fire({
+        title: `Êtes-vous sûr de vouloir supprimer l'utilisateur ${user.nom} ?`,
+        text: "Cette action est irréversible !",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Oui, supprimer !',
+        cancelButtonText: 'Annuler',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios.delete(`http://127.0.0.1:8000/api/utilisateurs/${user.id}`)
+            .then(() => {
+              Swal.fire(
+                'Supprimé !',
+                "L'utilisateur a été supprimé.",
+                'success'
+              );
+              fetchUtilisateurs(); // Rafraîchir la liste après la suppression
+            })
+            .catch((error) => {
+              console.error("Erreur lors de la suppression de l'utilisateur :", error);
+              Swal.fire(
+                'Erreur !',
+                "Une erreur s'est produite lors de la suppression de l'utilisateur.",
+                'error'
+              );
+            });
+        }
+      });
     };
 
-    const openNew = () => {
-      // Logique pour ouvrir le formulaire de création
+    // Fonction de formatage de la date sans l'heure
+    const formatDateInscription = (utilisateur) => {
+      if (!utilisateur.date_inscription) return ''; // Gérer les cas où la date n'existe pas
+      const dateOnly = utilisateur.date_inscription.split(' ')[0]; // Extraire uniquement la partie de la date (avant l'heure)
+      const date = new Date(dateOnly);
+      // Format de la date en jour/mois/année
+      return new Intl.DateTimeFormat('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
     };
 
-    const confirmDeleteSelected = () => {
-      // Logique pour supprimer les utilisateurs sélectionnés
+    const onPage = (event) => {
+      first.value = event.first; // Gérer la pagination
     };
 
     const exportCSV = (event) => {
@@ -91,10 +119,10 @@ export default {
 
     return {
       utilisateurs,
-      selectedProducts,
+      first,
       confirmDeleteUser,
-      openNew,
-      confirmDeleteSelected,
+      formatDateInscription,
+      onPage,
       exportCSV,
     };
   },
@@ -111,10 +139,6 @@ export default {
 
 .font-semibold {
   font-weight: 600;
-}
-
-.table-container {
-  overflow-x: auto;
 }
 
 :deep(.p-datatable .p-datatable-tbody > tr > td) {

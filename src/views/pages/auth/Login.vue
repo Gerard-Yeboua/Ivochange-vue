@@ -1,10 +1,41 @@
+
 <script setup>
 import FloatingConfigurator from '@/components/FloatingConfigurator.vue';
 import { ref } from 'vue';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2'; 
 
 const email = ref('');
 const password = ref('');
 const checked = ref(false);
+const errorMessage = ref(null);
+const router = useRouter();
+
+const handleLogin = async () => {
+  try {
+    const response = await axios.post('https://[http://127.0.0.1:8000/api/login', {
+      email: email.value,
+      password: password.value
+    });
+     // Supposons que l'API renvoie un token
+     localStorage.setItem('authToken', response.data.token);
+    
+    // Afficher une alerte de succès
+    await Swal.fire({
+      icon: 'success',
+      title: 'Connexion réussie',
+      text: 'Vous êtes maintenant connecté.',
+      confirmButtonText: 'OK'
+    });
+    
+    // Assuming the API returns a token, save it to localStorage and redirect
+    localStorage.setItem('authToken', response.data.token);
+    router.push('/dashboard');  // Navigate to dashboard or another page
+  } catch (error) {
+    errorMessage.value = 'Invalid credentials, please try again.';
+  }
+};
 </script>
 
 <template>
@@ -31,7 +62,7 @@ const checked = ref(false);
                                 />
                             </g>
                         </svg>
-                        <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Welcome to PrimeLand!</div>
+                        <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">CONNEXION</div>
                         <span class="text-muted-color font-medium">Sign in to continue</span>
                     </div>
 
