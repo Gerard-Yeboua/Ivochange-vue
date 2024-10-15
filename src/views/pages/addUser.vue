@@ -102,7 +102,7 @@ export default {
                 axios.post('http://127.0.0.1:8000/api/create', this.utilisateurs)
                     .then((response) => {
                         console.log('Utilisateur créé avec succès:', response.data);
-                        this.$router.push("/auth/listUser/");
+                        this.$router.push("/auth/login");
                         this.resetForm();
                     })
                     .catch((error) => {

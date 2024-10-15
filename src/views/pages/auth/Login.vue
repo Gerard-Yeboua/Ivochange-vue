@@ -1,43 +1,4 @@
 
-<script setup>
-import FloatingConfigurator from '@/components/FloatingConfigurator.vue';
-import { ref } from 'vue';
-import axios from 'axios';
-import { useRouter } from 'vue-router';
-import Swal from 'sweetalert2'; 
-
-const email = ref('');
-const password = ref('');
-const checked = ref(false);
-const errorMessage = ref(null);
-const router = useRouter();
-
-const handleLogin = async () => {
-  try {
-    const response = await axios.post('https://[http://127.0.0.1:8000/api/login', {
-      email: email.value,
-      password: password.value
-    });
-     // Supposons que l'API renvoie un token
-     localStorage.setItem('authToken', response.data.token);
-    
-    // Afficher une alerte de succès
-    await Swal.fire({
-      icon: 'success',
-      title: 'Connexion réussie',
-      text: 'Vous êtes maintenant connecté.',
-      confirmButtonText: 'OK'
-    });
-    
-    // Assuming the API returns a token, save it to localStorage and redirect
-    localStorage.setItem('authToken', response.data.token);
-    router.push('/dashboard');  // Navigate to dashboard or another page
-  } catch (error) {
-    errorMessage.value = 'Invalid credentials, please try again.';
-  }
-};
-</script>
-
 <template>
     <FloatingConfigurator />
     <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
@@ -62,31 +23,112 @@ const handleLogin = async () => {
                                 />
                             </g>
                         </svg>
-                        <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">CONNEXION</div>
-                        <span class="text-muted-color font-medium">Sign in to continue</span>
+                        <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Se Connecter</div>
+                        <span class="text-muted-color font-medium">Connectez-vous pour rester connecté.</span>
                     </div>
 
                     <div>
-                        <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
-                        <InputText id="email1" type="text" placeholder="Email address" class="w-full md:w-[30rem] mb-8" v-model="email" />
+                        <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">email</label>
+                        <InputText id="email1" type="text" placeholder="email address" class="w-full md:w-[30rem] mb-8" v-model="email" />
 
                         <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
-                        <Password id="password1" v-model="password" placeholder="Password" :toggleMask="true" class="mb-4" fluid :feedback="false"></Password>
+                        <Password id="password1" v-model="mot_de_passe" placeholder="Password"  class="mb-4" fluid :feedback="false"></Password>
 
                         <div class="flex items-center justify-between mt-2 mb-8 gap-8">
                             <div class="flex items-center">
                                 <Checkbox v-model="checked" id="rememberme1" binary class="mr-2"></Checkbox>
-                                <label for="rememberme1">Remember me</label>
+                                <label for="rememberme1">Se souvenir de moi</label>
                             </div>
-                            <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
+                            <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Mot de passe oublié ?</span>
                         </div>
-                        <Button label="Sign In" class="w-full" as="router-link" to="/"></Button>
+                        <div class="d-flex justify-content-center">
+                        <button type="submit" v-if="!loading" class="btn btn-primary" :disabled="!isDisabled">Se Connecter</button>
+                        <b-button variant="primary" disabled v-else>
+                            <b-spinner small type="grow"></b-spinner>
+                            Se Connecter</b-button
+                        >
+                        </div>
+                        <p class="mt-3 text-center">Vous n'avez pas de compte ?<router-link to="/pages/addUser" class="text-underline">Cliquez ici pour vous inscrire.</router-link></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </template>
+<script >
+  import axios from 'axios';
+  axios.defaults.withCredentials = true;
+  axios.defaults.withXSRFToken = true;
+  import Swal from 'sweetalert2'
+  
+  export default {
+    data(){
+      return {
+        email : "",
+        mot_de_passe : "",
+        remenberMe : "",
+        loading : false,
+      }
+    },
+    methods:{
+      login() {
+        this.loading= true ;
+        const data = {
+          email: this.email,
+          mot_de_passe: this.mot_de_passe
+        };
+        axios.post("http://127.0.0.1:8000/api/login", data)
+          .then(response => {
+            console.log(response)
+            if (response.status === 200) {
+              const token = response.data.token
+              const user = response.data.user
+              localStorage.setItem('token', token)
+              localStorage.setItem('user', JSON.stringify(user))
+              axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+              // console.log(token);
+  
+              this.$router.push('/dashboard')
+              // console.log('tout est zo!');
+            } else {
+              // Statut de réponse non attendu
+              console.log('Identifiant incorrect')
+            }
+          })
+          .catch((error) => {
+            // Affichage de l'erreur avec plus de détails
+            console.error('Erreur lors de la connexion', error)
+            // Déterminer le message d'erreur
+            let errorMessage = 'Erreur de connexion'
+            if (error.response.status === 422 || error.response.status === 401) {
+              errorMessage = error.response.data.message
+            }
+  
+            // Afficher le message d'erreur spécifique
+            Swal.fire({
+              icon: 'error',
+              title: 'Erreur!',
+              text: errorMessage
+            })
+          })
+          .finally(() => {
+            setTimeout(() => {
+              this.loading = false;
+            }, 1000);
+          });
+        
+      }
+  
+    },
+    computed : {
+      isDisabled(){
+        return this.email && this.mot_de_passe && !this.loading
+      }
+    }
+  }
+  
+  </script>
+  
 
 <style scoped>
 .pi-eye {

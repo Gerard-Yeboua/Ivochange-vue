@@ -1,7 +1,25 @@
-<script setup></script>
+<script setup>
+import { useRouter } from 'vue-router';
+import { onMounted } from 'vue';
+
+const router = useRouter();
+
+onMounted(() => {
+  // Récupérer le token dans le localStorage
+  const token = localStorage.getItem('token');
+
+  // Si le token n'existe pas, rediriger vers la page de connexion
+  if (!token) {
+    router.push('/auth/login');
+  }
+});
+</script>
 
 <template>
-    <router-view />
+  <!-- Le composant routeur affiche le bon composant selon la route active -->
+  <router-view />
 </template>
 
-<style scoped></style>
+<style scoped>
+/* Ajoute des styles ici si nécessaire */
+</style>
