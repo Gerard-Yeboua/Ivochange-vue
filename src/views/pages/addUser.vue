@@ -1,5 +1,3 @@
-
-
 <template>
     <div id="page-steppers">
         <Fluid>
@@ -10,37 +8,37 @@
                 <div class="flex flex-col gap-4">
                     <div class="flex flex-col gap-2">
                         <label for="nom">Nom</label>
-                        <InputText id="nom" v-model="utilisateurs.nom" type="text" />
+                        <InputText id="nom" v-model="utilisateurs.nom" type="text" required />
                     </div>
 
                     <div class="flex flex-col gap-2">
                         <label for="prenoms">Prénoms</label>
-                        <InputText id="prenoms" v-model="utilisateurs.prenoms" type="text" />
+                        <InputText id="prenoms" v-model="utilisateurs.prenoms" type="text" required />
                     </div>
 
                     <div class="flex flex-col gap-2">
                         <label for="telephone">Téléphone</label>
-                        <InputText id="telephone" v-model="utilisateurs.telephone" type="text" />
+                        <InputText id="telephone" v-model="utilisateurs.telephone" type="text" required />
                     </div>
 
                     <div class="flex flex-col gap-2">
                         <label for="pays">Pays</label>
-                        <InputText id="pays" v-model="utilisateurs.pays" type="text" />
+                        <InputText id="pays" v-model="utilisateurs.pays" type="text" required />
                     </div>
 
                     <div class="flex flex-col gap-2">
                         <label for="email">Email</label>
-                        <InputText id="email" v-model="utilisateurs.email" type="email" />
+                        <InputText id="email" v-model="utilisateurs.email" type="email" required />
                     </div>
 
                     <div class="flex flex-col gap-2">
                         <label for="mot_de_passe">Mot de Passe</label>
-                        <InputText id="mot_de_passe" v-model="utilisateurs.mot_de_passe" type="password" />
+                        <InputText id="mot_de_passe" v-model="utilisateurs.mot_de_passe" type="password" required />
                     </div>
 
                     <div class="flex flex-col gap-2">
                         <label for="date_inscription">Date d'Inscription</label>
-                        <InputText id="date_inscription" v-model="utilisateurs.date_inscription" type="date" />
+                        <InputText id="date_inscription" v-model="utilisateurs.date_inscription" type="date" required />
                     </div>
                 </div>
             </div>
@@ -59,9 +57,8 @@
 <script>
 import axios from 'axios';
 import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
 import Button from 'primevue/button';
-import Fluid from 'primevue/fluid'; // Assurez-vous que ce composant existe ou remplacez-le par un conteneur valide
+import Fluid from 'primevue/fluid';
 
 export default {
     data() {
@@ -75,11 +72,7 @@ export default {
                 mot_de_passe: '',
                 date_inscription: '',
                 statut: null
-            },
-            dropdownItems: [
-                { name: 'Actif', value: 'actif' },
-                { name: 'Inactif', value: 'inactif' }
-            ]
+            }
         };
     },
     methods: {
@@ -96,9 +89,10 @@ export default {
             };
         },
         submitForm(event) {
-            event.preventDefault(); // Correction de Event à event
-            // Validation simple
-            if (this.utilisateurs.nom && this.utilisateurs.prenoms && this.utilisateurs.email) {
+            event.preventDefault();
+            // Validation des champs
+            const { nom, prenoms, email, mot_de_passe, telephone } = this.utilisateurs;
+            if (nom && prenoms && email && mot_de_passe && telephone) {
                 axios.post('http://127.0.0.1:8000/api/create', this.utilisateurs)
                     .then((response) => {
                         console.log('Utilisateur créé avec succès:', response.data);
@@ -106,7 +100,13 @@ export default {
                         this.resetForm();
                     })
                     .catch((error) => {
-                        console.error('Erreur lors de la création de l\'utilisateur:', error.response.data);
+                        if (error.response) {
+                            console.error('Erreur lors de la création de l\'utilisateur:', error.response.data);
+                        } else if (error.request) {
+                            console.error('Aucune réponse reçue du serveur:', error.request);
+                        } else {
+                            console.error('Erreur lors de la configuration de la requête:', error.message);
+                        }
                     });
             } else {
                 console.error('Veuillez remplir tous les champs obligatoires.');
@@ -115,7 +115,6 @@ export default {
     },
     components: {
         InputText,
-        Select,
         Button,
         Fluid
     }
