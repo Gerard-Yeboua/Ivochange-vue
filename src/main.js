@@ -1,6 +1,9 @@
 import { createApp } from 'vue';
 import App from './App.vue';
+
 import router from './router';
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
+//import { startCase } from 'lodash.startcase';
 
 import Aura from '@primevue/themes/aura';
 import PrimeVue from 'primevue/config';
@@ -48,5 +51,7 @@ app.use(PrimeVue, {
 });
 app.use(ToastService);
 app.use(ConfirmationService);
+app.use(BootstrapVue);
+app.use(IconsPlugin);
 
 app.mount('#app');

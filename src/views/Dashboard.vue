@@ -2,6 +2,7 @@
 import { useLayout } from '@/layout/composables/layout';
 import { ProductService } from '@/service/ProductService';
 import { onMounted, ref, watch } from 'vue';
+//import startCase from './path-to-startCase';
 
 const { getPrimary, getSurface, isDarkTheme } = useLayout();
 

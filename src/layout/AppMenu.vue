@@ -72,7 +72,7 @@ const model = ref([
             {
                 label: 'Transaction',
                 icon: 'pi pi-fw pi-wallet',
-                to: '/pages/addTransaction' 
+                to: '/pages/addTransaction'
             },
             {
                 label: 'Taux d\'échange',
@@ -83,6 +83,11 @@ const model = ref([
                 label: 'Actualite',
                 icon: 'pi pi-envelope',
                 to: '/pages/actualite'
+            },
+            {
+                label: 'Devise',
+                icon: 'pi pi-envelope',
+                to: '/pages/devise'
             },
 
             {

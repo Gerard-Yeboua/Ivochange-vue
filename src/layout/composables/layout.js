@@ -1,5 +1,6 @@
 import { computed, reactive, readonly } from 'vue';
 
+
 const layoutConfig = reactive({
     preset: 'Aura',
     primary: 'emerald',
