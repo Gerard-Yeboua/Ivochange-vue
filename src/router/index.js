@@ -1,12 +1,18 @@
 import AppLayout from '@/layout/AppLayout.vue';
 import { createRouter, createWebHistory } from 'vue-router';
+import Login from '@/views/pages/auth/Login.vue'; // Assurez-vous que le chemin est correct
 
 const router = createRouter({
     history: createWebHistory(),
     routes: [
         {
+            path: '/login',
+            component: Login
+        },
+        {
             path: '/',
             component: AppLayout,
+            meta: { requiresAuth: true }, // Protéger la route avec requiresAuth
             children: [
                 {
                     path: '/',
@@ -130,6 +136,11 @@ const router = createRouter({
                     component: () => import('@/views/pages/AddDevise.vue')
                 },
                 {
+                    path: '/pages/avis',
+                    name: ' AddAvis',
+                    component: () => import('@/views/pages/AddAvis.vue')
+                },
+                {
                     path: '/pages/updateUser/:id',
                     name: 'updateUser',
                     component: () => import('@/views/pages/updateUser.vue')
@@ -174,5 +185,18 @@ const router = createRouter({
         }
     ]
 });
-
+// Guard de navigation pour vérifier l'authentification
+router.beforeEach((to, from, next) => {
+    const isAuthenticated = !!localStorage.getItem('token'); // Vérifier si le token existe dans localStorage
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
+        if (!isAuthenticated) {
+            // Si l'utilisateur n'est pas authentifié, rediriger vers la page de connexion
+            next('/login');
+        } else {
+            next(); // Sinon, permettre l'accès à la page
+        }
+    } else {
+        next(); // Permettre l'accès aux pages publiques
+    }
+});
 export default router;

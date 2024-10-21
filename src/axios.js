@@ -1,6 +1,7 @@
 import axios from 'axios';
-
 // Créer une instance axios
+
+axios.defaults.withCredentials = true;
 const instance = axios.create({
   baseURL: 'http://127.0.0.1:8000/api', // Remplace par l'URL de ton backend
   timeout: 10000, // Temps d'attente

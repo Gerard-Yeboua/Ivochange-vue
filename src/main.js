@@ -1,15 +1,13 @@
 import { createApp } from 'vue';
 import App from './App.vue';
-
 import router from './router';
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
+//import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
 //import { startCase } from 'lodash.startcase';
 
 import Aura from '@primevue/themes/aura';
 import PrimeVue from 'primevue/config';
 import ConfirmationService from 'primevue/confirmationservice';
 import ToastService from 'primevue/toastservice';
-
 import '@/assets/styles.scss';
 import '@/assets/tailwind.css';
 
@@ -19,23 +17,23 @@ import 'waypoints/lib/noframework.waypoints.min';
 // Configuration d'axios pour gérer les erreurs
 import axios from 'axios';
 axios.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 500) {
-      router.push({ path: '/auth/error' });
-    } else if (error.response && error.response.status === 404) {
-      router.push('/pages/notfound');
-    } else if (error.response && error.response.status === 422) {
-      // Gérer l'erreur personnalisée ici
-    } else if (error.response && error.response.status === 401) {
-      if (error.response.data.isDisconnected) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        router.push({ path: '/auth/login' });
-      }
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.status === 500) {
+            router.push({ path: '/auth/error' });
+        } else if (error.response && error.response.status === 404) {
+            router.push('/pages/notfound');
+        } else if (error.response && error.response.status === 422) {
+            // Gérer l'erreur personnalisée ici
+        } else if (error.response && error.response.status === 401) {
+            if (error.response.data.isDisconnected) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                router.push({ path: '/auth/login' });
+            }
+        }
+        return Promise.reject(error);
     }
-    return Promise.reject(error);
-  }
 );
 
 const app = createApp(App);
@@ -51,7 +49,7 @@ app.use(PrimeVue, {
 });
 app.use(ToastService);
 app.use(ConfirmationService);
-app.use(BootstrapVue);
-app.use(IconsPlugin);
+//app.use(BootstrapVue);
+//app.use(IconsPlugin);
 
 app.mount('#app');

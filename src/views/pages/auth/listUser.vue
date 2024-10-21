@@ -1,13 +1,13 @@
 <script>
-import Vue from 'vue';
+//import Vue from 'vue';
 import { ref, onMounted } from 'vue';
-import anyname from 'vue';
+//import anyname from 'vue';
 import axios from 'axios';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
 import Swal from 'sweetalert2';
-import { saveAs } from 'file-saver';
+//import { saveAs } from 'file-saver';
 //import { startCase } from 'lodash.startcase'; // Corriger l'importation ici
 
 export default {
@@ -83,14 +83,14 @@ export default {
         };
 
         // Exporter les utilisateurs au format CSV
-        const exportCSV = () => {
+        /*const exportCSV = () => {
             const csvContent = utilisateurs.value.map(utilisateur =>
                 [utilisateur.id, utilisateur.nom, utilisateur.prenoms, utilisateur.telephone, utilisateur.pays, utilisateur.date_inscription].join(',')
             ).join('\n');
 
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             saveAs(blob, 'utilisateurs.csv');
-        };
+        };*/
 
         onMounted(() => {
             fetchUtilisateurs(); // Charger les utilisateurs au montage du composant
@@ -103,7 +103,7 @@ export default {
             confirmDeleteUser,
             formatDateInscription,
             onPage,
-            exportCSV
+            //exportCSV
         };
     }
 };

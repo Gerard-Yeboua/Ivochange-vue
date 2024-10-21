@@ -89,6 +89,11 @@ const model = ref([
                 icon: 'pi pi-envelope',
                 to: '/pages/devise'
             },
+            {
+                label: 'Avis',
+                icon: 'pi pi-envelope',
+                to: '/pages/avis'
+            },
 
             {
                 label: 'Not Found',
