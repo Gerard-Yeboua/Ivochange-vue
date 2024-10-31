@@ -1,7 +1,10 @@
 <script setup>
 import { useLayout } from '@/layout/composables/layout';
 import { ProductService } from '@/service/ProductService';
+import axios from 'axios';
 import { onMounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
+
 
 const { getPrimary, getSurface, isDarkTheme } = useLayout();
 
@@ -93,7 +96,15 @@ function setChartOptions() {
 const formatCurrency = (value) => {
     return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 };
-
+async function logout() {
+    try {
+        await axios.post('http://127.0.0.1:8000/api/logout');
+        isLoggedIn.value = false;
+        router.push('auth/login'); // Redirige vers la page de connexion
+    } catch (error) {
+        console.error('Erreur lors de la déconnexion:', error);
+    }
+}
 watch([getPrimary, getSurface, isDarkTheme], () => {
     chartData.value = setChartData();
     chartOptions.value = setChartOptions();
@@ -141,6 +152,7 @@ watch([getPrimary, getSurface, isDarkTheme], () => {
                     </div>
                     <div class="flex items-center justify-center bg-cyan-100 dark:bg-cyan-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
                         <i class="pi pi-users text-cyan-500 !text-xl"></i>
+                        <span class="ml-2">{{ isLoggedIn ? 'Déconnecter' : 'Connecter' }}</span>
                     </div>
                 </div>
                 <span class="text-primary font-medium">520 </span>
