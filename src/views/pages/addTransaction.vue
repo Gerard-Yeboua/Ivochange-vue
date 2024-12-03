@@ -64,6 +64,11 @@ export default {
                     console.error("Erreur lors de l'enregistrement de la transaction", error);
                 });
         },
+        submitPersonalInfo() {
+            // Soumettre les informations personnelles à l'API ou à un autre service
+            alert("Informations personnelles validées.");
+            // Vous pouvez ajouter la logique pour soumettre les informations des utilisateurs
+        },
         limitPhoneNumber(event) {
             const phoneNumber = event.target.value.replace(/\D/g, ''); // Filtrer les non-chiffres
             if (phoneNumber.length > 10) {
@@ -163,6 +168,8 @@ export default {
                         <InputText v-model="newTransaction.montant_frais_inclus_reçu" id="montant_frais_inclus_reçu"
                             type="number" step="0.01" disabled />
                     </div>
+                    <!-- Bouton pour soumettre la transaction -->
+                    <button class="btn bg-green-500 text-white hover:bg-green-700 mt-4 p-2 rounded" @click="submitTransaction">Valider la transaction</button>
                 </div>
             </div>
 
@@ -193,6 +200,8 @@ export default {
                         <label for="pays">Pays</label>
                         <InputText v-model="utilisateurs.pays" id="pays" type="text" />
                     </div>
+                     <!-- Bouton pour soumettre les informations personnelles -->
+                     <button class="btn bg-blue-500 text-white hover:bg-blue-700 mt-4 p-2 rounded" @click="submitPersonalInfo">Valider les informations</button>
                 </div>
             </div>
         </div>
